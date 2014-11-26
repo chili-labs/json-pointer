@@ -12,7 +12,7 @@
 namespace ChiliLabs\JsonPointer\Test\Access\Accessor;
 
 use ChiliLabs\JsonPointer\Access\Accessor\AccessorInterface;
-use ChiliLabs\JsonPointer\Access\ArrayAccessor;
+use ChiliLabs\JsonPointer\Access\Accessor\ArrayAccessor;
 
 /**
  * @author Daniel Tschinder <daniel@tschinder.de>
