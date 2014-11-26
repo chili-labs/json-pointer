@@ -44,7 +44,7 @@ class ArrayAccessor implements AccessorInterface
     /**
      * {@inheritdoc}
      */
-    public function set($document, JsonPointer $path, $value)
+    public function set(&$document, JsonPointer $path, $value)
     {
         $pathElements = $path->toArray();
 
@@ -53,8 +53,6 @@ class ArrayAccessor implements AccessorInterface
         } else {
             $document = $value;
         }
-
-        return $document;
     }
 
     /**

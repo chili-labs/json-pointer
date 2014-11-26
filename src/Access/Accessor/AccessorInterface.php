@@ -41,11 +41,9 @@ interface AccessorInterface
      * @param JsonPointer $path
      * @param mixed       $value
      *
-     * @return mixed
-     *
      * @throws InvalidPathException
      */
-    public function set($document, JsonPointer $path, $value);
+    public function set(&$document, JsonPointer $path, $value);
 
     /**
      * @param mixed       $document

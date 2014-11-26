@@ -122,8 +122,8 @@ class ArrayAccessorWithArrayTest extends \PHPUnit_Framework_TestCase
     public function testSet($expected, $document, $path, $value, $success)
     {
         if ($success) {
-            $result = $this->accessor->set($document, new JsonPointer($path), $value);
-            $this->assertEquals($expected, $result);
+            $this->accessor->set($document, new JsonPointer($path), $value);
+            $this->assertEquals($expected, $document);
         } else {
             $this->setExpectedException('\ChiliLabs\JsonPointer\Exception\InvalidPathException');
             $this->accessor->set($document, new JsonPointer($path), $value);
