@@ -51,6 +51,14 @@ interface AccessorInterface
      * @param mixed       $document
      * @param JsonPointer $path
      *
+     * @return mixed
+     */
+    public function remove($document, JsonPointer $path);
+
+    /**
+     * @param mixed       $document
+     * @param JsonPointer $path
+     *
      * @return bool
      *
      * @throws InvalidPathException

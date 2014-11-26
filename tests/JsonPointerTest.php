@@ -18,7 +18,6 @@ use ChiliLabs\JsonPointer\JsonPointer;
  */
 class JsonPointerTest extends \PHPUnit_Framework_TestCase
 {
-
     public function pointerDataProvider()
     {
         return array(
@@ -63,7 +62,7 @@ class JsonPointerTest extends \PHPUnit_Framework_TestCase
             $expected = '';
         }
         $pointer = JsonPointer::fromArray($input);
-        $this->assertEquals($expected, (string)$pointer);
+        $this->assertEquals($expected, (string) $pointer);
         $this->assertEquals($input, $pointer->toArray());
     }
 
@@ -78,7 +77,7 @@ class JsonPointerTest extends \PHPUnit_Framework_TestCase
     {
         if ($success) {
             $pointer = new JsonPointer($path);
-            $this->assertEquals($path, (string)$pointer);
+            $this->assertEquals($path, (string) $pointer);
         } else {
             $this->setExpectedException('\InvalidArgumentException');
             new JsonPointer($path);

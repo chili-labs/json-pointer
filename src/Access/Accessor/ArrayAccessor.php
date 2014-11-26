@@ -24,7 +24,7 @@ class ArrayAccessor implements AccessorInterface
      */
     public function supports($document)
     {
-        return is_array($document) || $document instanceof \ArrayAccess;
+        return is_array($document) || $document instanceof \ArrayAccess && $document instanceof \Countable;
     }
 
     /**
@@ -32,13 +32,10 @@ class ArrayAccessor implements AccessorInterface
      */
     public function get($document, JsonPointer $path)
     {
-        foreach ($path->toArray() as $pathPart) {
-            if (!is_array($document) || !array_key_exists($pathPart, $document)) {
-                throw new InvalidPathException(
-                    sprintf('The element "%s" in the path "%s" does not exist in the document.', $pathPart, $path)
-                );
-            }
-            $document = $document[$pathPart];
+        $pathElements = $path->toArray();
+
+        if (count($pathElements) > 0) {
+            return $this->doGet($document, $pathElements);
         }
 
         return $document;
@@ -49,17 +46,29 @@ class ArrayAccessor implements AccessorInterface
      */
     public function set($document, JsonPointer $path, $value)
     {
-        $element = &$document;
-        foreach ($path->toArray() as $pathParts) {
-            if (!is_array($element) || !array_key_exists($pathParts, $element)) {
-                throw new InvalidPathException(
-                    sprintf('The element "%s" in the path "%s" does not exist in the document.', $pathParts, $path)
-                );
-            }
-            $element = &$element[$pathParts];
+        $pathElements = $path->toArray();
+
+        if (count($pathElements) > 0) {
+            $this->doSetOrRemove($document, $pathElements, $value);
+        } else {
+            $document = $value;
         }
 
-        $element = $value;
+        return $document;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function remove($document, JsonPointer $path)
+    {
+        $pathElements = $path->toArray();
+
+        if (count($pathElements) > 0) {
+            $this->doSetOrRemove($document, $pathElements);
+        } else {
+            $document = null;
+        }
 
         return $document;
     }
@@ -69,13 +78,83 @@ class ArrayAccessor implements AccessorInterface
      */
     public function has($document, JsonPointer $path)
     {
-        foreach ($path->toArray() as $pathPart) {
-            if (!is_array($document) || !array_key_exists($pathPart, $document)) {
-                return false;
-            }
-            $document = $document[$pathPart];
+        try {
+            $this->get($document, $path);
+        } catch (InvalidPathException $exception) {
+            return false;
         }
 
         return true;
+    }
+
+    /**
+     * @param array $node
+     * @param array $path
+     *
+     * @return mixed
+     *
+     * @throws InvalidPathException
+     */
+    private function doGet($node, array $path)
+    {
+        $key = array_shift($path);
+        if (!array_key_exists($key, $node)) {
+            throw new InvalidPathException(sprintf('The element "%s" does not exist.', $key));
+        }
+
+        if (count($path) === 0) {
+            return $node['-' === $key ? count($node) - 1 : $key];
+        }
+
+        if (!$this->supports($node[$key])) {
+            throw new InvalidPathException(sprintf('The element "%s" is invalid.', $key));
+        }
+
+        return $this->doGet($node[$key], $path);
+    }
+
+    /**
+     * When called without 3rd parameter (not setting it to null!) the path
+     * will be unset in the document
+     *
+     * @param array      $node
+     * @param array      $path
+     * @param mixed|null $value
+     *
+     * @throws InvalidPathException
+     */
+    private function doSetOrRemove(&$node, array $path, $value = null)
+    {
+        $key = array_shift($path);
+
+        if (count($path) === 0) {
+            $key = '-' === $key ? count($node) : $key;
+
+            if (2 === func_num_args()) {
+                // If it was called without 3rd parameter we are removing
+                unset($node[$key]);
+            } elseif (is_numeric($key)) {
+                // Insert at desired index in the array or ArrayAccess
+                $nodeCount = count($node);
+                for ($i = (int) $key; $i < $nodeCount; $i++) {
+                    $oldValue = $node[$i];
+                    $node[$i] = $value;
+                    $value = $oldValue;
+                }
+                $node[$nodeCount] = $value;
+            } else {
+                $node[$key] = $value;
+            }
+
+            return;
+        }
+
+        if (!array_key_exists($key, $node) || !is_array($node[$key])) {
+            throw new InvalidPathException(
+                sprintf('The element "%s" does not exist or is invalid.', $key)
+            );
+        }
+
+        $this->doSetOrRemove($node[$key], $path, $value);
     }
 }

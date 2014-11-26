@@ -29,7 +29,8 @@ class ArrayAccessorTest extends \PHPUnit_Framework_TestCase
         $this->accessor = new ArrayAccessor();
     }
 
-    public function supportDataProvider(){
+    public function supportDataProvider()
+    {
         return array(
             array(true, array()),
             array(true, new \ArrayObject()),
@@ -46,15 +47,21 @@ class ArrayAccessorTest extends \PHPUnit_Framework_TestCase
     /**
      * @dataProvider supportDataProvider
      *
-     * @param bool $expected
+     * @param bool  $expected
      * @param mixed $document
      */
     public function testSupports($expected, $document)
     {
-        if($expected) {
-            $this->assertTrue($this->accessor->supports($document), 'Accessor does not support document of type ' . gettype($document));
+        if ($expected) {
+            $this->assertTrue(
+                $this->accessor->supports($document),
+                'Accessor does not support document of type '.gettype($document)
+            );
         } else {
-            $this->assertFalse($this->accessor->supports($document), 'Accessor must not support document of type ' . gettype($document));
+            $this->assertFalse(
+                $this->accessor->supports($document),
+                'Accessor must not support document of type '.gettype($document)
+            );
         }
     }
 }

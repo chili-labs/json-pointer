@@ -18,7 +18,7 @@ use ChiliLabs\JsonPointer\JsonPointer;
 /**
  * @author Daniel Tschinder <daniel@tschinder.de>
  */
-class ArrayAccessorWithArrayTest extends \PHPUnit_Framework_TestCase
+class ArrayAccessorWithArrayAccessTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @var AccessorInterface
@@ -33,17 +33,17 @@ class ArrayAccessorWithArrayTest extends \PHPUnit_Framework_TestCase
     public function accessorDataProvider()
     {
         return array(
-            array(array('abc' => null), array('abc' => null), '', true),
-            array(array(), array(), '', true),
-            array(null, array(), '/not', false),
-            array(1, array('' => 1), '/', true),
-            array(null, array('abc' => 1), '/', false),
-            array(1, array('abc' => 1), '/abc', true),
-            array(null, array('abd' => 1), '/abc', false),
-            array(1234, array('abc' => array('' => 1234)), '/abc/', true),
-            array(null, array('abc' => array('def' => 1234)), '/abc/', false),
-            array(1234, array('abc' => array('def' => 1234)), '/abc/def', true),
-            array(null, array('def' => 123), '/def/', false),
+            array(new \ArrayObject(array('abc' => null)), new \ArrayObject(array('abc' => null)), '', true),
+            array(new \ArrayObject(array()), new \ArrayObject(array()), '', true),
+            array(null, new \ArrayObject(array()), '/not', false),
+            array(1, new \ArrayObject(array('' => 1)), '/', true),
+            array(null, new \ArrayObject(array('abc' => 1)), '/', false),
+            array(1, new \ArrayObject(array('abc' => 1)), '/abc', true),
+            array(null, new \ArrayObject(array('abd' => 1)), '/abc', false),
+            array(1234, new \ArrayObject(array('abc' => array('' => 1234))), '/abc/', true),
+            array(null, new \ArrayObject(array('abc' => array('def' => 1234))), '/abc/', false),
+            array(1234, new \ArrayObject(array('abc' => array('def' => 1234))), '/abc/def', true),
+            array(null, new \ArrayObject(array('def' => 123)), '/def/', false),
         );
     }
 
@@ -91,22 +91,22 @@ class ArrayAccessorWithArrayTest extends \PHPUnit_Framework_TestCase
     public function setDataProvider()
     {
         return array(
-            array(array(), array('123' => 123), '', array(), true),
-            array(array('' => 1, '123' => 123), array('123' => 123), '/', 1, true),
-            array(array('' => array()), array('' => 123), '/', array(), true),
-            array(array('def' => 456), array('def' => 123), '/def', 456, true),
+            array(array(), new \ArrayObject(array('123' => 123)), '', array(), true),
+            array(new \ArrayObject(array('' => 1, '123' => 123)), new \ArrayObject(array('123' => 123)), '/', 1, true),
+            array(new \ArrayObject(array('' => array())), new \ArrayObject(array('' => 123)), '/', array(), true),
+            array(new \ArrayObject(array('def' => 456)), new \ArrayObject(array('def' => 123)), '/def', 456, true),
             array(
-                array('abc' => array('def' => array('ghi' => 321))),
-                array('abc' => array('def' => array('ghi' => 123))),
+                new \ArrayObject(array('abc' => array('def' => array('ghi' => 321)))),
+                new \ArrayObject(array('abc' => array('def' => array('ghi' => 123)))),
                 '/abc/def/ghi',
                 321,
                 true,
             ),
-            array(null, array('def' => 123), '/def/', 456, false),
-            array(null, array('q' => array('bar' => 2)), '/a/b', 456, false),
-            array(array(0, 1, 5), array(0, 1), '/2', 5, true),
-            array(array(0, 5, 1), array(0, 1), '/1', 5, true),
-            array(array(0, 1, 5), array(0, 1), '/-', 5, true),
+            array(null, new \ArrayObject(array('def' => 123)), '/def/', 456, false),
+            array(null, new \ArrayObject(array('q' => array('bar' => 2))), '/a/b', 456, false),
+            array(new \ArrayObject(array(0, 1, 5)), new \ArrayObject(array(0, 1)), '/2', 5, true),
+            array(new \ArrayObject(array(0, 5, 1)), new \ArrayObject(array(0, 1)), '/1', 5, true),
+            array(new \ArrayObject(array(0, 1, 5)), new \ArrayObject(array(0, 1)), '/-', 5, true),
         );
     }
 
