@@ -49,7 +49,7 @@ class ArrayAccessor implements AccessorInterface
         $pathElements = $path->toArray();
 
         if (count($pathElements) > 0) {
-            $this->doSetOrRemove($document, $pathElements, $value);
+            $this->doSet($document, $pathElements, $value);
         } else {
             $document = $value;
         }
@@ -112,26 +112,24 @@ class ArrayAccessor implements AccessorInterface
     }
 
     /**
-     * When called without 3rd parameter (not setting it to null!) the path
-     * will be unset in the document
-     *
      * @param array      $node
      * @param array      $path
      * @param mixed|null $value
      *
      * @throws InvalidPathException
      */
-    private function doSetOrRemove(&$node, array $path, $value = null)
+    private function doSet(&$node, array $path, $value)
     {
         $key = array_shift($path);
+        if ('-' === $key || is_numeric($key) && ((string) (int) $key) === $key) {
+            if ($this->isAssociativeArray($node)) {
+                throw new InvalidPathException('Used "-" but array was associative.');
+            }
+            $key = '-' === $key ? count($node) : (int) $key;
+        }
 
         if (count($path) === 0) {
-            $key = '-' === $key ? count($node) : $key;
-
-            if (2 === func_num_args()) {
-                // If it was called without 3rd parameter we are removing
-                unset($node[$key]);
-            } elseif (is_numeric($key)) {
+            if (is_int($key)) {
                 // Insert at desired index in the array or ArrayAccess
                 $nodeCount = count($node);
                 for ($i = (int) $key; $i < $nodeCount; $i++) {
@@ -147,12 +145,24 @@ class ArrayAccessor implements AccessorInterface
             return;
         }
 
-        if (!array_key_exists($key, $node) || !is_array($node[$key])) {
+        if (!array_key_exists($key, $node) || !$this->supports($node[$key])) {
             throw new InvalidPathException(
                 sprintf('The element "%s" does not exist or is invalid.', $key)
             );
         }
 
-        $this->doSetOrRemove($node[$key], $path, $value);
+        $this->doSet($node[$key], $path, $value);
     }
+
+    /**
+     * @param array|\ArrayAccess $array
+     *
+     * @return bool
+     */
+    private function isAssociativeArray($array)
+    {
+        for (reset($array); is_int(key($array)); next($array));
+
+        return !is_null(key($array));
+    }   
 }

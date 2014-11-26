@@ -129,4 +129,30 @@ class ArrayAccessorWithArrayTest extends \PHPUnit_Framework_TestCase
             $this->accessor->set($document, new JsonPointer($path), $value);
         }
     }
+
+//    public function removeDataProvider()
+//    {
+//        return array(
+//            array(null, array('123' => 123), '/abs', false),
+//        );
+//    }
+//
+//    /**
+//     * @dataProvider removeDataProvider
+//     *
+//     * @param mixed  $expected
+//     * @param array  $document
+//     * @param string $path
+//     * @param bool   $success
+//     */
+//    public function testRemove($expected, $document, $path, $success)
+//    {
+//        if ($success) {
+//            $this->accessor->remove($document, new JsonPointer($path));
+//            $this->assertEquals($expected, $document);
+//        } else {
+//            $this->setExpectedException('\ChiliLabs\JsonPointer\Exception\InvalidPathException');
+//            $this->accessor->remove($document, new JsonPointer($path));
+//        }
+//    }
 }
