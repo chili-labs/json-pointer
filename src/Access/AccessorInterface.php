@@ -25,7 +25,7 @@ interface AccessorInterface
      * @param JsonPointer $path
      * @param mixed       $value
      *
-     * @return
+     * @return mixed
      */
     public function set($document, JsonPointer $path, $value);
 

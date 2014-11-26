@@ -35,10 +35,14 @@ class JsonPointer
      *
      * @return JsonPointer
      */
-    public static function fromArray($pathParts)
+    public static function fromArray(array $pathParts)
     {
-        $pathParts = self::escape($pathParts);
-        $path = '/' . implode('/', $pathParts);
+        if (0 === count($pathParts)) {
+            $path = '';
+        } else {
+            $pathParts = self::escape($pathParts);
+            $path = '/'.implode('/', $pathParts);
+        }
 
         return new JsonPointer($path);
     }

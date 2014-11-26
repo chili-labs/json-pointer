@@ -13,7 +13,6 @@ namespace ChiliLabs\JsonPointer\Test\Access;
 
 use ChiliLabs\JsonPointer\Access\AccessorInterface;
 use ChiliLabs\JsonPointer\Access\ArrayAccessor;
-use ChiliLabs\JsonPointer\JsonPointer;
 
 /**
  * @author Daniel Tschinder <daniel@tschinder.de>
@@ -30,48 +29,32 @@ class ArrayAccessorTest extends \PHPUnit_Framework_TestCase
         $this->accessor = new ArrayAccessor();
     }
 
-    public function testSupports()
-    {
-        $this->assertTrue($this->accessor->supports(array()));
-        $this->assertTrue($this->accessor->supports(new \ArrayObject()));
-        $this->assertFalse($this->accessor->supports(''));
-        $this->assertFalse($this->accessor->supports(123));
-        $this->assertFalse($this->accessor->supports(1.2));
-        $this->assertFalse($this->accessor->supports(new \stdClass()));
-        $this->assertFalse($this->accessor->supports(false));
-        $this->assertFalse($this->accessor->supports(true));
-        $this->assertFalse($this->accessor->supports(null));
-    }
-
-    public function testHasWithArray()
-    {
-        $this->assertTrue($this->accessor->has(array('abc' => null), new JsonPointer('')));
-        $this->assertTrue($this->accessor->has(array(), new JsonPointer('')));
-        $this->assertTrue($this->accessor->has(array('' => 1), new JsonPointer('/')));
-        $this->assertFalse($this->accessor->has(array('abc' => 1), new JsonPointer('/')));
-        $this->assertTrue($this->accessor->has(array('abc' => 1), new JsonPointer('/abc')));
-        $this->assertFalse($this->accessor->has(array('abd' => 1), new JsonPointer('/abc')));
-        $this->assertTrue($this->accessor->has(array('abc' => array('' => 1234)), new JsonPointer('/abc/')));
-        $this->assertFalse($this->accessor->has(array('abc' => array('def' => 1234)), new JsonPointer('/abc/')));
-        $this->assertTrue($this->accessor->has(array('abc' => array('def' => 1234)), new JsonPointer('/abc/def')));
-    }
-
-    public function testGetWithArray()
-    {
-        $this->assertEquals(array('abc' => null), $this->accessor->get(array('abc' => null), new JsonPointer('')));
-        $this->assertEquals(array(), $this->accessor->get(array(), new JsonPointer('')));
-        $this->assertEquals(1, $this->accessor->get(array('' => 1), new JsonPointer('/')));
-        $this->assertEquals(1, $this->accessor->get(array('abc' => 1), new JsonPointer('/abc')));
-        $this->assertEquals(1234, $this->accessor->get(array('abc' => array('' => 1234)), new JsonPointer('/abc/')));
-        $this->assertEquals(1234, $this->accessor->get(array('a' => array('d' => 1234)), new JsonPointer('/a/d')));
+    public function supportDataProvider(){
+        return array(
+            array(true, array()),
+            array(true, new \ArrayObject()),
+            array(false, ''),
+            array(false, 123),
+            array(false, 1.2),
+            array(false, new \stdClass()),
+            array(false, true),
+            array(false, false),
+            array(false, null),
+        );
     }
 
     /**
-     * @expectedException \ChiliLabs\JsonPointer\Exception\InvalidPathException
+     * @dataProvider supportDataProvider
+     *
+     * @param bool $expected
+     * @param mixed $document
      */
-    public function testGetWithArrayAndInvalidPath()
+    public function testSupports($expected, $document)
     {
-        $this->accessor->get(array('abc' => 1), new JsonPointer('/'));
-
+        if($expected) {
+            $this->assertTrue($this->accessor->supports($document), 'Accessor does not support document of type ' . gettype($document));
+        } else {
+            $this->assertFalse($this->accessor->supports($document), 'Accessor must not support document of type ' . gettype($document));
+        }
     }
 }

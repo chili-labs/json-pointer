@@ -20,7 +20,7 @@ class ArrayAccessor implements AccessorInterface
     public function get($document, JsonPointer $path)
     {
         foreach ($path->toArray() as $pathPart) {
-            if (!array_key_exists($pathPart, $document)) {
+            if (!is_array($document) || !array_key_exists($pathPart, $document)) {
                 throw new InvalidPathException(
                     sprintf('The element "%s" in the path "%s" does not exist in the document.', $pathPart, $path)
                 );
@@ -38,7 +38,7 @@ class ArrayAccessor implements AccessorInterface
     {
         $element = &$document;
         foreach ($path->toArray() as $pathParts) {
-            if (!array_key_exists($pathParts, $element)) {
+            if (!is_array($element) || !array_key_exists($pathParts, $element)) {
                 throw new InvalidPathException(
                     sprintf('The element "%s" in the path "%s" does not exist in the document.', $pathParts, $path)
                 );
@@ -57,7 +57,7 @@ class ArrayAccessor implements AccessorInterface
     public function has($document, JsonPointer $path)
     {
         foreach ($path->toArray() as $pathPart) {
-            if (!array_key_exists($pathPart, $document)) {
+            if (!is_array($document) || !array_key_exists($pathPart, $document)) {
                 return false;
             }
             $document = $document[$pathPart];
