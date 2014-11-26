@@ -1,6 +1,6 @@
 {
     "name": "chili-labs/json-pointer",
-    "description": "RFC 6901 implementation",
+    "description": "Simple library for accessing PHP data structures with JSON Pointers (RFC 6901)",
     "license": "MIT",
     "authors": [
         {
