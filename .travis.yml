@@ -6,10 +6,10 @@ php:
     - 5.6
     - hhvm
 before_install:
-     - sudo pip install codecov
+    - composer require satooshi/php-coveralls --no-update
 install:
     - composer install --prefer-source
 script:
-    - phpunit --coverage-clover build/reports/clover.xml
+    - phpunit --coverage-clover build/logs/clover.xml
 after_success:
-    - codecov
+    - sh -c "if [ "$TRAVIS_PHP_VERSION" != "hhvm" ] && [ "$TRAVIS_PHP_VERSION" != "hhvm-nightly" ]; then php vendor/bin/coveralls -v; fi"
