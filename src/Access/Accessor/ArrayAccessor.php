@@ -1,9 +1,22 @@
 <?php
-namespace ChiliLabs\JsonPointer\Access;
+
+/*
+ * This file is part of the json-pointer library.
+ *
+ * (c) Daniel Tschinder
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace ChiliLabs\JsonPointer\Access\Accessor;
 
 use ChiliLabs\JsonPointer\Exception\InvalidPathException;
 use ChiliLabs\JsonPointer\JsonPointer;
 
+/**
+ * @author Daniel Tschinder <daniel@tschinder.de>
+ */
 class ArrayAccessor implements AccessorInterface
 {
     /**

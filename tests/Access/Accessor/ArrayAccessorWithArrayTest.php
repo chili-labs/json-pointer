@@ -9,9 +9,9 @@
  * file that was distributed with this source code.
  */
 
-namespace ChiliLabs\JsonPointer\Test\Access;
+namespace ChiliLabs\JsonPointer\Test\Access\Accessor;
 
-use ChiliLabs\JsonPointer\Access\AccessorInterface;
+use ChiliLabs\JsonPointer\Access\Accessor\AccessorInterface;
 use ChiliLabs\JsonPointer\Access\ArrayAccessor;
 use ChiliLabs\JsonPointer\JsonPointer;
 
