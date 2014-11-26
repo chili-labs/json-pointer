@@ -1,0 +1,24 @@
+{
+    "name": "chili-labs/json-pointer",
+    "description": "RFC 6901 implementation",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Daniel Tschinder",
+            "email": "daniel@tschinder.de",
+            "homepage": "http://www.tschinder.de"
+        }
+    ],
+    "require": {
+    },
+    "require-dev": {
+    },
+    "autoload": {
+        "psr-4": { "ChiliLabs\\JsonPointer\\": "src/" }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0.x-dev"
+        }
+    }
+}
