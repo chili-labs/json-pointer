@@ -47,7 +47,7 @@ interface AccessorInterface
      *
      * @throws InvalidPathException
      */
-    public function set($document, JsonPointer $path, $value);
+    public function set(&$document, JsonPointer $path, $value);
 
     /**
      * Adds a new object/array node with the specified value
@@ -75,7 +75,7 @@ interface AccessorInterface
      *
      * @throws InvalidPathException
      */
-    public function add($document, JsonPointer $path, $value, $recursive = false);
+    public function add(&$document, JsonPointer $path, $value, $recursive = false);
 
     /**
      * Removes a object/array node
@@ -86,7 +86,7 @@ interface AccessorInterface
      * @param mixed       $document
      * @param JsonPointer $path
      */
-    public function remove($document, JsonPointer $path);
+    public function remove(&$document, JsonPointer $path);
 
     /**
      * @param mixed       $document

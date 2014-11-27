@@ -44,7 +44,7 @@ class ArrayAccessor implements AccessorInterface
     /**
      * {@inheritdoc}
      */
-    public function set($document, JsonPointer $path, $value)
+    public function set(&$document, JsonPointer $path, $value)
     {
         $pathElements = $path->toArray();
 
@@ -53,14 +53,12 @@ class ArrayAccessor implements AccessorInterface
         } else {
             $document = $value;
         }
-
-        return $document;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function add($document, JsonPointer $path, $value, $recursive = false)
+    public function add(&$document, JsonPointer $path, $value, $recursive = false)
     {
         $pathElements = $path->toArray();
 
@@ -69,14 +67,12 @@ class ArrayAccessor implements AccessorInterface
         } else {
             $document = $value;
         }
-
-        return $document;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function remove($document, JsonPointer $path)
+    public function remove(&$document, JsonPointer $path)
     {
         $pathElements = $path->toArray();
 
@@ -85,8 +81,6 @@ class ArrayAccessor implements AccessorInterface
         } else {
             $document = null;
         }
-
-        return $document;
     }
 
     /**
