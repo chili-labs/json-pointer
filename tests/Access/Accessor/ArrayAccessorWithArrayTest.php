@@ -123,7 +123,7 @@ class ArrayAccessorWithArrayTest extends \PHPUnit_Framework_TestCase
     public function testSet($expected, $document, $path, $value, $success)
     {
         if ($success) {
-            $document = $this->accessor->set($document, new JsonPointer($path), $value);
+            $this->accessor->set($document, new JsonPointer($path), $value);
             $this->assertEquals($expected, $document);
         } else {
             $this->setExpectedException('\ChiliLabs\JsonPointer\Exception\InvalidPathException');
@@ -182,7 +182,7 @@ class ArrayAccessorWithArrayTest extends \PHPUnit_Framework_TestCase
     public function testAdd($expected, $document, $path, $value, $recursive, $success)
     {
         if ($success) {
-            $document = $this->accessor->add($document, new JsonPointer($path), $value, $recursive);
+            $this->accessor->add($document, new JsonPointer($path), $value, $recursive);
             $this->assertEquals($expected, $document);
         } else {
             $this->setExpectedException('\ChiliLabs\JsonPointer\Exception\InvalidPathException');
@@ -211,7 +211,7 @@ class ArrayAccessorWithArrayTest extends \PHPUnit_Framework_TestCase
     public function testRemove($expected, $document, $path, $success)
     {
         if ($success) {
-            $document = $this->accessor->remove($document, new JsonPointer($path));
+            $this->accessor->remove($document, new JsonPointer($path));
             $this->assertEquals($expected, $document);
         } else {
             $this->setExpectedException('\ChiliLabs\JsonPointer\Exception\InvalidPathException');
