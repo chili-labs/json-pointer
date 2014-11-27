@@ -27,9 +27,9 @@ class PropertyAccessAccessor implements AccessorInterface
      */
     private $propertyAccess;
 
-    public function __construct()
+    public function __construct(PropertyAccessor $propertyAccess)
     {
-        $this->propertyAccess = PropertyAccess::createPropertyAccessor();
+        $this->propertyAccess = $propertyAccess;
     }
 
     /**
