@@ -16,7 +16,7 @@
         "symfony/property-access": "~2.3"
     },
     "suggest": {
-        "symfony/property-access": "When using the PropertyAccessAccessor you need to install this."
+        "symfony/property-access": "Required when using the PropertyAccessAccessor"
     },
     "autoload": {
         "psr-4": { "ChiliLabs\\JsonPointer\\": "src/" }
