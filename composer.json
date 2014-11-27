@@ -13,6 +13,10 @@
         "php": ">=5.3.3"
     },
     "require-dev": {
+        "symfony/property-access": "~2.3"
+    },
+    "suggest": {
+        "symfony/property-access": "When using the PropertyAccessAccessor you need to install this."
     },
     "autoload": {
         "psr-4": { "ChiliLabs\\JsonPointer\\": "src/" }
