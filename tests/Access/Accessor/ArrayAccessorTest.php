@@ -33,7 +33,7 @@ class ArrayAccessorTest extends \PHPUnit_Framework_TestCase
     {
         return array(
             array(true, array()),
-//            array(true, new \ArrayObject()),
+            array(false, new \ArrayObject()),
             array(false, ''),
             array(false, 123),
             array(false, 1.2),

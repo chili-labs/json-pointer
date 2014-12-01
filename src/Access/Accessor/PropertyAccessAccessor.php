@@ -12,8 +12,6 @@
 namespace ChiliLabs\JsonPointer\Access\Accessor;
 
 use ChiliLabs\JsonPointer\Exception\InvalidPathException;
-use ChiliLabs\JsonPointer\JsonPointer;
-use Symfony\Component\PropertyAccess\PropertyAccess;
 use Symfony\Component\PropertyAccess\PropertyAccessor;
 
 /**
@@ -21,7 +19,6 @@ use Symfony\Component\PropertyAccess\PropertyAccessor;
  */
 class PropertyAccessAccessor implements AccessorInterface
 {
-
     /**
      * @var PropertyAccessor
      */
@@ -35,70 +32,70 @@ class PropertyAccessAccessor implements AccessorInterface
     /**
      * {@inheritdoc}
      */
-    public function supports($document)
+    public function supports($node)
     {
-        return is_object($document);
+        return is_object($node);
     }
 
     /**
      * {@inheritdoc}
      */
-    public function get($document, JsonPointer $path)
+    public function &get(&$node, $singlePath)
     {
-        $pathElements = $path->toArray();
-
-        if (count($pathElements) > 0) {
-            return $this->propertyAccess->getValue($document, implode('.', $pathElements));
+        if (!$this->isReadable($node, $singlePath)) {
+            throw new InvalidPathException(sprintf('Path %s does not exist', $singlePath));
         }
 
-        return $document;
+        return $this->propertyAccess->getValue($node, $singlePath);
     }
 
     /**
      * {@inheritdoc}
      */
-    public function set(&$document, JsonPointer $path, $value)
+    public function set(&$node, $singlePath, $value)
     {
-        $pathElements = $path->toArray();
-
-        if (count($pathElements) > 0) {
-            $this->propertyAccess->setValue($document, implode('.', $pathElements), $value);
-        } else {
-            $document = $value;
-        }
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function add(&$document, JsonPointer $path, $value, $recursive = false)
-    {
-        if (!$this->has($document, $path)) {
-            throw new InvalidPathException(sprintf('The path "%s" does not exist.', $path));
+        if (!$this->isWritable($node, $singlePath)) {
+            throw new InvalidPathException(sprintf('Path %s does not exist', $singlePath));
         }
 
-        $this->set($document, $path, $value);
+        $this->propertyAccess->setValue($node, $singlePath, $value);
     }
 
     /**
      * {@inheritdoc}
      */
-    public function remove(&$document, JsonPointer $path)
+    public function create(&$node, $singlePath, $value)
     {
-        $pathElements = $path->toArray();
-
-        if (count($pathElements) > 0) {
-            $this->propertyAccess->setValue($document, implode('.', $pathElements), null);
-        } else {
-            $document = null;
+        if (!$this->isWritable($node, $singlePath)) {
+            throw new InvalidPathException(
+                sprintf('Path %s could not be created in object of type %s', $singlePath, gettype($node))
+            );
         }
+
+        $this->propertyAccess->setValue($node, $singlePath, $value);
     }
 
     /**
      * {@inheritdoc}
      */
-    public function has($document, JsonPointer $path)
+    public function delete(&$node, $singlePath)
     {
-        return $this->propertyAccess->isReadable($document, implode('.', $path->toArray()));
+        $this->set($node, $singlePath, null);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function isReadable($node, $singlePath)
+    {
+        return $this->propertyAccess->isReadable($node, $singlePath);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function isWritable($node, $singlePath)
+    {
+        return $this->propertyAccess->isWritable($node, $singlePath);
     }
 }

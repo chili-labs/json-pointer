@@ -22,33 +22,42 @@ class AccessorFactory
     /**
      * @var AccessorInterface[]
      */
-    private $accessors;
+    private $accessorList;
 
     /**
-     * @param AccessorInterface[] $accessors
+     * @param AccessorInterface[] $accessorList
      */
-    public function __construct(array $accessors)
+    public function __construct(array $accessorList)
     {
-        $this->accessors = $accessors;
+        $this->accessorList = $accessorList;
     }
 
     /**
-     * @param mixed $document
+     * @param AccessorInterface $accessor
+     */
+    public function registerAccessor(AccessorInterface $accessor)
+    {
+        $this->accessorList[] = $accessor;
+        array_unique($this->accessorList);
+    }
+
+    /**
+     * @param mixed $node
      *
      * @return AccessorInterface
      *
      * @throws NoMatchingAccessorException
      */
-    public function findAccessorForDocument($document)
+    public function findAccessorForNode($node)
     {
-        foreach ($this->accessors as $accessor) {
-            if ($accessor->supports($document)) {
+        foreach ($this->accessorList as $accessor) {
+            if ($accessor->supports($node)) {
                 return $accessor;
             }
         }
 
         throw new NoMatchingAccessorException(
-            sprintf('Could not find a matching Accessor for document of type %s.', gettype($document))
+            sprintf('Could not find a matching Accessor for node of type %s.', gettype($node))
         );
     }
 }

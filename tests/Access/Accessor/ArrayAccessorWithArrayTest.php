@@ -33,17 +33,12 @@ class ArrayAccessorWithArrayTest extends \PHPUnit_Framework_TestCase
     public function accessorDataProvider()
     {
         return array(
-            array(array('abc' => null), array('abc' => null), '', true),
-            array(array(), array(), '', true),
+            array(null, array('abc' => null), '', false),
             array(null, array(), '/not', false),
-            array(1, array('' => 1), '/', true),
-            array(null, array('abc' => 1), '/', false),
-            array(1, array('abc' => 1), '/abc', true),
-            array(null, array('abd' => 1), '/abc', false),
-            array(1234, array('abc' => array('' => 1234)), '/abc/', true),
-            array(null, array('abc' => array('def' => 1234)), '/abc/', false),
-            array(1234, array('abc' => array('def' => 1234)), '/abc/def', true),
-            array(null, array('def' => 123), '/def/', false),
+            array(1, array('' => 1), '', true),
+            array(1, array('abc' => 1), 'abc', true),
+            array(null, array('abc' => null), 'abc', true),
+            array(null, array('abc' => null), 'abd', false),
         );
     }
 
@@ -51,20 +46,43 @@ class ArrayAccessorWithArrayTest extends \PHPUnit_Framework_TestCase
      * @dataProvider accessorDataProvider
      *
      * @param mixed  $unused
-     * @param array  $document
+     * @param array  $node
      * @param string $path
      * @param bool   $expected
      */
-    public function testHas($unused, $document, $path, $expected)
+    public function testReadable($unused, $node, $path, $expected)
     {
         if ($expected) {
             $this->assertTrue(
-                $this->accessor->has($document, new JsonPointer($path)),
+                $this->accessor->isReadable($node, $path),
                 'Accessor must report true for this combination of document and path'
             );
         } else {
             $this->assertFalse(
-                $this->accessor->has($document, new JsonPointer($path)),
+                $this->accessor->isReadable($node, $path),
+                'Accessor must report false for this combination of document and path'
+            );
+        }
+    }
+
+    /**
+     * @dataProvider accessorDataProvider
+     *
+     * @param mixed  $unused
+     * @param array  $node
+     * @param string $path
+     * @param bool   $expected
+     */
+    public function testWritable($unused, $node, $path, $expected)
+    {
+        if ($expected) {
+            $this->assertTrue(
+                $this->accessor->isWritable($node, $path),
+                'Accessor must report true for this combination of document and path'
+            );
+        } else {
+            $this->assertFalse(
+                $this->accessor->isWritable($node, $path),
                 'Accessor must report false for this combination of document and path'
             );
         }
@@ -81,33 +99,24 @@ class ArrayAccessorWithArrayTest extends \PHPUnit_Framework_TestCase
     public function testGet($expected, $document, $path, $success)
     {
         if ($success) {
-            $this->assertEquals($expected, $this->accessor->get($document, new JsonPointer($path)));
+            $this->assertEquals($expected, $this->accessor->get($document, $path));
         } else {
             $this->setExpectedException('\ChiliLabs\JsonPointer\Exception\InvalidPathException');
-            $this->accessor->get($document, new JsonPointer($path));
+            $this->accessor->get($document, $path);
         }
     }
 
     public function setDataProvider()
     {
         return array(
-            array(array(), array('123' => 123), '', array(), true),
-            array(array('' => 1, '123' => 123), array('123' => 123), '/', 1, false),
-            array(array('' => array()), array('' => 123), '/', array(), true),
-            array(array('def' => 456), array('def' => 123), '/def', 456, true),
-            array(
-                array('abc' => array('def' => array('ghi' => 321))),
-                array('abc' => array('def' => array('ghi' => 123))),
-                '/abc/def/ghi',
-                321,
-                true,
-            ),
-            array(null, array('def' => 123), '/def/', 456, false),
-            array(null, array('q' => array('bar' => 2)), '/a/b', 456, false),
-            array(array(0, 1, 5), array(0, 1), '/2', 5, false),
-            array(array(0, 5), array(0, 1), '/1', 5, true),
-            array(array('a' => 0, 1 => 5), array('a' => 0, 1 => 1), '/1', 5, true),
-            array(array(0, 5), array(0, 1), '/-', 5, false),
+            array(null, array('123' => 123), '', array(), false),
+            array(null, array('123' => 123), 'abc', array(), false),
+            array(array('123' => 1), array('123' => 123), '123', 1, true),
+            array(array('' => array()), array('' => 123), '', array(), true),
+            array(array(0, 1, 5), array(0, 1), '2', 5, false),
+            array(array(0, 5), array(0, 1), '1', 5, true),
+            array(array('a' => 0, 1 => 5), array('a' => 0, 1 => 1), '1', 5, true),
+            array(array(0, 5), array(0, 1), '-', 5, false),
         );
     }
 
@@ -123,99 +132,71 @@ class ArrayAccessorWithArrayTest extends \PHPUnit_Framework_TestCase
     public function testSet($expected, $document, $path, $value, $success)
     {
         if ($success) {
-            $this->accessor->set($document, new JsonPointer($path), $value);
+            $this->accessor->set($document, $path, $value);
             $this->assertEquals($expected, $document);
         } else {
             $this->setExpectedException('\ChiliLabs\JsonPointer\Exception\InvalidPathException');
-            $this->accessor->set($document, new JsonPointer($path), $value);
+            $this->accessor->set($document, $path, $value);
         }
     }
 
-    public function addDataProvider()
+    public function createDataProvider()
     {
         return array(
-            array(array(), array('123' => 123), '', array(), false, true),
-            array(array(), array('123' => 123), '', array(), true, true),
-            array(array('' => 1, '123' => 123), array('123' => 123), '/', 1, false, true),
-            array(array('' => 1, '123' => 123), array('123' => 123), '/', 1, true, true),
-            array(array('' => array()), array('' => 123), '/', array(), false, false),
-            array(array('' => array()), array('' => 123), '/', array(), true, false),
-            array(array('def' => 456), array(), '/def', 456, false, true),
-            array(array('def' => 456), array(), '/def', 456, true, true),
-            array(
-                array('abc' => array('def' => array('ghi' => 321))),
-                array('abc' => array()),
-                '/abc/def/ghi',
-                321,
-                true,
-                true,
-            ),
-            array(null, array('abc' => array()), '/abc/def/ghi', 321, false, false),
-            array(null, array('def' => 123), '/def/', 456, false, false),
-            array(null, array('def' => 123), '/def/', 456, true, false),
-            array(null, array('q' => array('bar' => 2)), '/a/b', 456, false, false),
-            array(
-                array('q' => array('bar' => 2), 'a' => array('b' => 456)),
-                array('q' => array('bar' => 2)),
-                '/a/b',
-                456,
-                true,
-                true,
-            ),
-            array(array(0, 1, 5), array(0, 1), '/2', 5, false, true),
-            array(array(0, 5, 1), array(0, 1), '/1', 5, false, true),
-            array(array(0, 5, 1), array('a' => 0, 1 => 1), '/1', 5, false, false),
-            array(array(0, 1, 5), array(0, 1), '/-', 5, false, true),
+            array(array('' => 1, '123' => 123), array('123' => 123), '', 1, true),
+            array(array('' => array()), array('' => 123), '', array(), false),
+            array(array('def' => 456), array(), 'def', 456, true),
+            array(array(0, 1, 5), array(0, 1), '2', 5, true),
+            array(array(0, 5, 1), array(0, 1), '1', 5, false),
+            array(null, array('a' => 0, 1 => 1), '1', 5, false),
+            array(array(0, 1, '-' => 5), array(0, 1), '-', 5, true),
         );
     }
 
     /**
-     * @dataProvider addDataProvider
+     * @dataProvider createDataProvider
      *
      * @param mixed  $expected
      * @param array  $document
      * @param string $path
      * @param mixed  $value
-     * @param bool   $recursive
      * @param bool   $success
      */
-    public function testAdd($expected, $document, $path, $value, $recursive, $success)
+    public function testCreate($expected, $document, $path, $value, $success)
     {
         if ($success) {
-            $this->accessor->add($document, new JsonPointer($path), $value, $recursive);
+            $this->accessor->create($document, $path, $value);
             $this->assertEquals($expected, $document);
         } else {
             $this->setExpectedException('\ChiliLabs\JsonPointer\Exception\InvalidPathException');
-            $this->accessor->add($document, new JsonPointer($path), $value, $recursive);
+            $this->accessor->create($document, $path, $value);
         }
     }
 
-    public function removeDataProvider()
+    public function deleteDataProvider()
     {
         return array(
-            array(array('123' => 123), array('123' => 123), '/abs', true),
-            array(array(), array('123' => 123), '/123', true),
-            array(array('123' => array()), array('123' => array('abc' => 1)), '/123/abc', true),
-            array(null, array('123' => array('abc' => 1)), '/124/abc', false),
+            array(null, array('123' => 123), 'abs', false),
+            array(array(), array('123' => 123), '123', true),
         );
     }
 
     /**
-     * @dataProvider removeDataProvider
+     * @dataProvider deleteDataProvider
      *
      * @param mixed  $expected
      * @param array  $document
      * @param string $path
      * @param bool   $success
      */
-    public function testRemove($expected, $document, $path, $success)
+    public function testDelete($expected, $document, $path, $success)
     {
         if ($success) {
-            $this->accessor->remove($document, new JsonPointer($path));
+            $this->accessor->delete($document, $path);
             $this->assertEquals($expected, $document);
         } else {
             $this->setExpectedException('\ChiliLabs\JsonPointer\Exception\InvalidPathException');
-            $this->accessor->remove($document, new JsonPointer($path));
+            $this->accessor->delete($document, $path);
         }
     }
 }

@@ -12,7 +12,6 @@
 namespace ChiliLabs\JsonPointer\Access\Accessor;
 
 use ChiliLabs\JsonPointer\Exception\InvalidPathException;
-use ChiliLabs\JsonPointer\JsonPointer;
 
 /**
  * @author Daniel Tschinder <daniel@tschinder.de>
@@ -20,34 +19,34 @@ use ChiliLabs\JsonPointer\JsonPointer;
 interface AccessorInterface
 {
     /**
-     * @param mixed $document
+     * @param mixed $node
      *
      * @return bool
      */
-    public function supports($document);
+    public function supports($node);
 
     /**
-     * @param mixed       $document
-     * @param JsonPointer $path
+     * @param mixed  $node
+     * @param string $singlePath
      *
      * @return mixed
      *
      * @throws InvalidPathException
      */
-    public function get($document, JsonPointer $path);
+    public function &get(&$node, $singlePath);
 
     /**
      * Sets the value of an already existing object/array node
      *
      * If the node does not exist an InvalidPathException will be thrown
      *
-     * @param mixed       $document
-     * @param JsonPointer $path
-     * @param mixed       $value
+     * @param mixed  $node
+     * @param string $singlePath
+     * @param mixed  $value
      *
      * @throws InvalidPathException
      */
-    public function set(&$document, JsonPointer $path, $value);
+    public function set(&$node, $singlePath, $value);
 
     /**
      * Adds a new object/array node with the specified value
@@ -65,17 +64,13 @@ interface AccessorInterface
      * $accessor->add({does:{not:{}}}, new JsonPointer('/does/not/exist'), 1)
      * This works and the document looks like {does:{not:{exist:1}}}
      *
-     * $accessor->add({}, new JsonPointer('/does/not/exist'), 1, true)
-     * This works as well and the document looks like {does:{not:{exist:1}}}
-     *
-     * @param mixed       $document
-     * @param JsonPointer $path
-     * @param mixed       $value
-     * @param bool        $recursive
+     * @param mixed  $node
+     * @param string $singlePath
+     * @param mixed  $value
      *
      * @throws InvalidPathException
      */
-    public function add(&$document, JsonPointer $path, $value, $recursive = false);
+    public function create(&$node, $singlePath, $value);
 
     /**
      * Removes a object/array node
@@ -83,18 +78,24 @@ interface AccessorInterface
      * If the node to remove does not exist, no Exception will be thrown
      * To have a strict behaviour use together with has()
      *
-     * @param mixed       $document
-     * @param JsonPointer $path
+     * @param mixed  $node
+     * @param string $singlePath
      */
-    public function remove(&$document, JsonPointer $path);
+    public function delete(&$node, $singlePath);
 
     /**
-     * @param mixed       $document
-     * @param JsonPointer $path
+     * @param mixed  $node
+     * @param string $singlePath
      *
      * @return bool
-     *
-     * @throws InvalidPathException
      */
-    public function has($document, JsonPointer $path);
+    public function isReadable($node, $singlePath);
+
+    /**
+     * @param mixed  $node
+     * @param string $singlePath
+     *
+     * @return bool
+     */
+    public function isWritable($node, $singlePath);
 }
