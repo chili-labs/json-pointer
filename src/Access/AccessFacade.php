@@ -144,6 +144,49 @@ class AccessFacade
      * @param mixed       $node
      * @param JsonPointer $pointer
      *
+     * @return bool
+     */
+    public function isReadable($node, JsonPointer $pointer)
+    {
+        return $this->checkAccess('Readable', $node, $pointer);
+    }
+
+    /**
+     * @param mixed       $node
+     * @param JsonPointer $pointer
+     *
+     * @return bool
+     */
+    public function isWritable($node, JsonPointer $pointer)
+    {
+        return $this->checkAccess('Writable', $node, $pointer);
+    }
+
+    /**
+     * @param string      $mode
+     * @param mixed       $node
+     * @param JsonPointer $pointer
+     *
+     * @return bool
+     */
+    private function checkAccess($mode, $node, JsonPointer $pointer)
+    {
+        $pathElements = $pointer->toArray();
+        $lastPath = array_pop($pathElements);
+        try {
+            $lastNode = &$this->getNodeReference($node, JsonPointer::fromArray($pathElements));
+        } catch (InvalidPathException $exception) {
+            return false;
+        }
+        $accessor = $this->getAccessorForNode($lastNode, $pointer, $lastPath);
+
+        return $accessor->{'is' . $mode}($lastNode, $lastPath);
+    }
+
+    /**
+     * @param mixed       $node
+     * @param JsonPointer $pointer
+     *
      * @return mixed
      */
     private function &getNodeReference(&$node, JsonPointer $pointer)
