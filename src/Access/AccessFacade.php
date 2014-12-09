@@ -84,14 +84,7 @@ class AccessFacade
     }
 
     /**
-     * Adds a new object/array node with the specified value
-     *
-     * If $recursive is set to false and one of the parent nodes does not
-     * exist an InvalidPathException will be thrown. The last node will
-     * be created if it does not exist
-     *
-     * If $recursive is set to true all non existent nodes will be created
-     * on the supplied path.
+     * Adds a new object/array node with the specified value.
      *
      * $accessor->add({}, new JsonPointer('/does/not/exist'), 1)
      * This will result in an Exception
@@ -124,11 +117,13 @@ class AccessFacade
     /**
      * Removes a object/array node
      *
-     * If the node to remove does not exist, no Exception will be thrown
+     * If the last node to remove does not exist, no Exception will be thrown
      * To have a strict behaviour use together with has()
      *
      * @param mixed       $node
      * @param JsonPointer $pointer
+     *
+     * @throws InvalidPathException
      */
     public function delete(&$node, JsonPointer $pointer)
     {

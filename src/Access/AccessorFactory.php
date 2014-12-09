@@ -27,7 +27,7 @@ class AccessorFactory
     /**
      * @param AccessorInterface[] $accessorList
      */
-    public function __construct(array $accessorList)
+    public function __construct(array $accessorList = array())
     {
         $this->accessorList = $accessorList;
     }

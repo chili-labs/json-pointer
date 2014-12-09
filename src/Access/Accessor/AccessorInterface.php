@@ -51,18 +51,7 @@ interface AccessorInterface
     /**
      * Adds a new object/array node with the specified value
      *
-     * If $recursive is set to false and one of the parent nodes does not
-     * exist an InvalidPathException will be thrown. The last node will
-     * be created if it does not exist
-     *
-     * If $recursive is set to true all non existent nodes will be created
-     * on the supplied path.
-     *
-     * $accessor->add({}, new JsonPointer('/does/not/exist'), 1)
-     * This will result in an Exception
-     *
-     * $accessor->add({does:{not:{}}}, new JsonPointer('/does/not/exist'), 1)
-     * This works and the document looks like {does:{not:{exist:1}}}
+     * If the node already exists and InvalidPathException will be thrown
      *
      * @param mixed  $node
      * @param string $singlePath
@@ -76,7 +65,7 @@ interface AccessorInterface
      * Removes a object/array node
      *
      * If the node to remove does not exist, no Exception will be thrown
-     * To have a strict behaviour use together with has()
+     * To have a strict behaviour use together with isReadable()
      *
      * @param mixed  $node
      * @param string $singlePath

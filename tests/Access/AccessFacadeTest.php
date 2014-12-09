@@ -30,10 +30,8 @@ class AccessFacadeTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $factory = new AccessorFactory(array(
-            new ArrayAccessor(),
-            new PropertyAccessAccessor(PropertyAccess::createPropertyAccessor())
-        ));
+        $factory = new AccessorFactory();
+        $factory->registerAccessor(new ArrayAccessor());
         $this->facade = new AccessFacade($factory);
     }
 
