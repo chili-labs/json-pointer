@@ -22,7 +22,7 @@ class AccessorFactory
     /**
      * @var AccessorInterface[]
      */
-    private $accessorList;
+    private $accessorList = array();
 
     /**
      * @param AccessorInterface[] $accessorList
@@ -38,7 +38,6 @@ class AccessorFactory
     public function registerAccessor(AccessorInterface $accessor)
     {
         $this->accessorList[] = $accessor;
-        array_unique($this->accessorList);
     }
 
     /**
