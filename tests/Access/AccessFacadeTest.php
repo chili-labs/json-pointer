@@ -13,10 +13,8 @@ namespace ChiliLabs\JsonPointer\Test\Access\Accessor;
 
 use ChiliLabs\JsonPointer\Access\AccessFacade;
 use ChiliLabs\JsonPointer\Access\Accessor\ArrayAccessor;
-use ChiliLabs\JsonPointer\Access\Accessor\PropertyAccessAccessor;
 use ChiliLabs\JsonPointer\Access\AccessorFactory;
 use ChiliLabs\JsonPointer\JsonPointer;
-use Symfony\Component\PropertyAccess\PropertyAccess;
 
 /**
  * @author Daniel Tschinder <daniel@tschinder.de>
@@ -86,7 +84,7 @@ class AccessFacadeTest extends \PHPUnit_Framework_TestCase
                 array('abc' => array('def' => array('ghi' => 123))),
                 '/abc/def/ghi',
                 321,
-                true
+                true,
             ),
             array(null, array('def' => 123), '/def/', 456, false),
             array(null, array('q' => array('bar' => 2)), '/a/b', 456, false),
@@ -129,7 +127,7 @@ class AccessFacadeTest extends \PHPUnit_Framework_TestCase
                 array('abc' => array('def' => array('ghi' => 123))),
                 '/abc/def/ghi',
                 321,
-                false
+                false,
             ),
             array(null, array('def' => 123), '/def/', 456, false),
             array(null, array('q' => array('bar' => 2)), '/a/b', 456, false),

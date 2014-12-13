@@ -20,7 +20,6 @@ use ChiliLabs\JsonPointer\JsonPointer;
  */
 class AccessFacade
 {
-
     /**
      * @var AccessorFactory
      */
@@ -69,6 +68,7 @@ class AccessFacade
         $pathElements = $pointer->toArray();
         if (!$pathElements) {
             $node = $value;
+
             return;
         }
 
@@ -103,6 +103,7 @@ class AccessFacade
         $pathElements = $pointer->toArray();
         if (!$pathElements) {
             $node = $value;
+
             return;
         }
         $lastPath = array_pop($pathElements);
@@ -179,7 +180,7 @@ class AccessFacade
         }
         $accessor = $this->getAccessorForNode($lastNode, $pointer, $lastPath);
 
-        return $accessor->{'is' . $mode}($lastNode, $lastPath);
+        return $accessor->{'is'.$mode}($lastNode, $lastPath);
     }
 
     /**
