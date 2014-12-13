@@ -78,7 +78,7 @@ class AccessFacadeTest extends \PHPUnit_Framework_TestCase
     {
         return array(
             array(array(), array('123' => 123), '', array(), true),
-            array(array('' => 1, '123' => 123), array('123' => 123), '/', 1, false),
+            array(null, array('123' => 123), '/', 1, false),
             array(array('' => array()), array('' => 123), '/', array(), true),
             array(array('def' => 456), array('def' => 123), '/def', 456, true),
             array(
@@ -86,14 +86,14 @@ class AccessFacadeTest extends \PHPUnit_Framework_TestCase
                 array('abc' => array('def' => array('ghi' => 123))),
                 '/abc/def/ghi',
                 321,
-                true,
+                true
             ),
             array(null, array('def' => 123), '/def/', 456, false),
             array(null, array('q' => array('bar' => 2)), '/a/b', 456, false),
-            array(array(0, 1, 5), array(0, 1), '/2', 5, false),
+            array(null, array(0, 1), '/2', 5, false),
             array(array(0, 5), array(0, 1), '/1', 5, true),
             array(array('a' => 0, 1 => 5), array('a' => 0, 1 => 1), '/1', 5, true),
-            array(array(0, 5), array(0, 1), '/-', 5, false),
+            array(null, array(0, 1), '/-', 5, false),
         );
     }
 
@@ -114,6 +114,49 @@ class AccessFacadeTest extends \PHPUnit_Framework_TestCase
         } else {
             $this->setExpectedException('\ChiliLabs\JsonPointer\Exception\InvalidPathException');
             $this->facade->set($document, new JsonPointer($path), $value);
+        }
+    }
+
+    public function createDataProvider()
+    {
+        return array(
+            array(array(), array('123' => 123), '', array(), true),
+            array(array('' => 1, '123' => 123), array('123' => 123), '/', 1, true),
+            array(array('' => array()), array('' => 123), '/', array(), false),
+            array(array('def' => 456), array('def' => 123), '/def', 456, false),
+            array(
+                array('abc' => array('def' => array('ghi' => 321))),
+                array('abc' => array('def' => array('ghi' => 123))),
+                '/abc/def/ghi',
+                321,
+                false
+            ),
+            array(null, array('def' => 123), '/def/', 456, false),
+            array(null, array('q' => array('bar' => 2)), '/a/b', 456, false),
+            array(array(0, 1, 5), array(0, 1), '/2', 5, true),
+            array(array(0, 5, 1), array(0, 1), '/1', 5, true),
+            array(array('a' => 0, 1 => 5), array('a' => 0, 1 => 1), '/1', 5, false),
+            array(array(0, 1, 5), array(0, 1), '/-', 5, true),
+        );
+    }
+
+    /**
+     * @dataProvider createDataProvider
+     *
+     * @param mixed  $expected
+     * @param array  $document
+     * @param string $path
+     * @param mixed  $value
+     * @param bool   $success
+     */
+    public function testCreate($expected, $document, $path, $value, $success)
+    {
+        if ($success) {
+            $this->facade->create($document, new JsonPointer($path), $value);
+            $this->assertEquals($expected, $document);
+        } else {
+            $this->setExpectedException('\ChiliLabs\JsonPointer\Exception\InvalidPathException');
+            $this->facade->create($document, new JsonPointer($path), $value);
         }
     }
 }

@@ -101,6 +101,10 @@ class AccessFacade
     public function create(&$node, JsonPointer $pointer, $value)
     {
         $pathElements = $pointer->toArray();
+        if (!$pathElements) {
+            $node = $value;
+            return;
+        }
         $lastPath = array_pop($pathElements);
         $lastNode = & $this->getNodeReference($node, JsonPointer::fromArray($pathElements));
         $lastPath = $this->checkAndTransformKey($lastPath, $lastNode);
