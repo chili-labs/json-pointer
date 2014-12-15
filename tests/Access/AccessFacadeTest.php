@@ -157,4 +157,43 @@ class AccessFacadeTest extends \PHPUnit_Framework_TestCase
             $this->facade->create($document, new JsonPointer($path), $value);
         }
     }
+
+    public function deleteDataProvider()
+    {
+        return array(
+            array(null, array('123' => 123), '', false),
+            array(array('123' => 123), array('' => 1, '123' => 123), '/', true),
+            array(null, array('123' => 123), '/', false),
+            array(array(), array('def' => 123), '/def', true),
+            array(
+                array('abc' => array('def' => array())),
+                array('abc' => array('def' => array('ghi' => 123))),
+                '/abc/def/ghi',
+                true,
+            ),
+            array(array(0, 1), array(0, 1, 5), '/2', true),
+            array(array(0, 5), array(0, 1, 5), '/1', true),
+            array(array('a' => 0), array('a' => 0, 1 => 1), '/1', true),
+            array(null, array(0, 1), '/-', false),
+        );
+    }
+
+    /**
+     * @dataProvider deleteDataProvider
+     *
+     * @param mixed  $expected
+     * @param array  $document
+     * @param string $path
+     * @param bool   $success
+     */
+    public function testDelete($expected, $document, $path, $success)
+    {
+        if ($success) {
+            $this->facade->delete($document, new JsonPointer($path));
+            $this->assertEquals($expected, $document);
+        } else {
+            $this->setExpectedException('\ChiliLabs\JsonPointer\Exception\InvalidPathException');
+            $this->facade->delete($document, new JsonPointer($path));
+        }
+    }
 }

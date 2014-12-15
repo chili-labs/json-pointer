@@ -133,11 +133,19 @@ class AccessFacade
     public function delete(&$node, JsonPointer $pointer)
     {
         $pathElements = $pointer->toArray();
+        if (!$pathElements) {
+            throw new InvalidPathException('Cannot delete root document');
+        }
         $lastPath = array_pop($pathElements);
         $lastNode = & $this->getNodeReference($node, JsonPointer::fromArray($pathElements));
 
         $accessor = $this->getAccessorForNode($lastNode, $pointer, $lastPath);
+        $isAssocArray = $this->isAssociativeArray($lastNode);
         $accessor->delete($lastNode, $lastPath);
+
+        if (!$isAssocArray) {
+            $lastNode = array_values($lastNode);
+        }
     }
 
     /**
@@ -249,7 +257,7 @@ class AccessFacade
      */
     private function checkAndTransformKey($key, $node)
     {
-        if ('-' === $key || is_numeric($key) && ((string) (int) $key) === $key) {
+        if ('-' === $key || $this->isIntegerKey($key)) {
             if (!is_array($node) || $this->isAssociativeArray($node)) {
                 throw new InvalidPathException(
                     sprintf('Used "%s" but array was not an array or is associative.', $key)
@@ -259,6 +267,15 @@ class AccessFacade
         }
 
         return $key;
+    }
+
+    /**
+     * @param $key
+     *
+     * @return bool
+     */
+    private function isIntegerKey($key) {
+        return is_numeric($key) && ((string) (int) $key) === $key;
     }
 
     /**
