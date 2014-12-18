@@ -42,11 +42,13 @@ class PropertyAccessAccessor implements AccessorInterface
      */
     public function &get(&$node, $singlePath)
     {
-        if (!$this->isReadable($node, $singlePath)) {
+        if (!$singlePath || !$this->isReadable($node, $singlePath)) {
             throw new InvalidPathException(sprintf('Path %s does not exist', $singlePath));
         }
 
-        return $this->propertyAccess->getValue($node, $singlePath);
+        $value = $this->propertyAccess->getValue($node, $singlePath);
+
+        return $value;
     }
 
     /**
