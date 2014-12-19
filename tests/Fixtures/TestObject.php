@@ -22,6 +22,8 @@ class TestObject
 
     private $privateProperty = 'private';
 
+    private $array = array();
+
     /**
      * @return mixed
      */
@@ -52,5 +54,21 @@ class TestObject
     public function setPrivateProperty($privateProperty)
     {
         $this->privateProperty = $privateProperty;
+    }
+
+    /**
+     * @return array
+     */
+    public function getArray()
+    {
+        return $this->array;
+    }
+
+    /**
+     * @param array $array
+     */
+    public function setArray($array)
+    {
+        $this->array = $array;
     }
 }

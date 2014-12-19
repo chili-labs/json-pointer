@@ -13,8 +13,11 @@ namespace ChiliLabs\JsonPointer\Test\Access;
 
 use ChiliLabs\JsonPointer\Access\AccessFacade;
 use ChiliLabs\JsonPointer\Access\Accessor\ArrayAccessor;
+use ChiliLabs\JsonPointer\Access\Accessor\PropertyAccessAccessor;
 use ChiliLabs\JsonPointer\Access\AccessorFactory;
 use ChiliLabs\JsonPointer\JsonPointer;
+use ChiliLabs\JsonPointer\Test\Fixtures\TestObject;
+use Symfony\Component\PropertyAccess\PropertyAccess;
 
 /**
  * @author Daniel Tschinder <daniel@tschinder.de>
@@ -28,8 +31,8 @@ class AccessFacadeTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $factory = new AccessorFactory();
-        $factory->registerAccessor(new ArrayAccessor());
+        $factory = new AccessorFactory(array(new ArrayAccessor()));
+        $factory->registerAccessor(new PropertyAccessAccessor(PropertyAccess::createPropertyAccessor()));
         $this->facade = new AccessFacade($factory);
     }
 
@@ -74,6 +77,15 @@ class AccessFacadeTest extends \PHPUnit_Framework_TestCase
 
     public function setDataProvider()
     {
+
+        $array = new TestObject();
+        $array->setArray(array(array(new TestObject())));
+
+        $expected = new TestObject();
+        $tmp = new TestObject();
+        $tmp->setPrivateProperty(5);
+        $expected->setArray(array(array($tmp)));
+
         return array(
             array(array(), array('123' => 123), '', array(), true),
             array(null, array('123' => 123), '/', 1, false),
@@ -92,6 +104,7 @@ class AccessFacadeTest extends \PHPUnit_Framework_TestCase
             array(array(0, 5), array(0, 1), '/1', 5, true),
             array(array('a' => 0, 1 => 5), array('a' => 0, 1 => 1), '/1', 5, true),
             array(null, array(0, 1), '/-', 5, false),
+            array($expected, $array, '/array/0/0/privateProperty', 5, true),
         );
     }
 
