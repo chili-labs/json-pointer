@@ -183,10 +183,10 @@ class AccessFacade
         $lastPath = array_pop($pathElements);
         try {
             $lastNode = &$this->getNodeReference($node, JsonPointer::fromArray($pathElements));
+            $accessor = $this->getAccessorForNode($lastNode, $pointer, $lastPath);
         } catch (InvalidPathException $exception) {
             return false;
         }
-        $accessor = $this->getAccessorForNode($lastNode, $pointer, $lastPath);
 
         return $accessor->{'is'.$mode}($lastNode, $lastPath);
     }
