@@ -77,7 +77,6 @@ class AccessFacadeTest extends \PHPUnit_Framework_TestCase
 
     public function setDataProvider()
     {
-
         $array = new TestObject();
         $array->setArray(array(array(new TestObject())));
 
@@ -208,5 +207,64 @@ class AccessFacadeTest extends \PHPUnit_Framework_TestCase
             $this->setExpectedException('\ChiliLabs\JsonPointer\Exception\InvalidPathException');
             $this->facade->delete($document, new JsonPointer($path));
         }
+    }
+
+
+    public function isReadableDataProvider()
+    {
+        // TODO test with objects
+        return array(
+            array(false, array('123' => 123), ''),
+            array(false, array('123' => 123), '/'),
+            array(true, array('123' => 123), '/123'),
+            array(false, array('def' => 123), '/def/123'),
+            array(true, array('def' => array('abc' => 123)), '/def/abc'),
+            array(false, array('def' => array('abc' => 123)), '/def/abcd'),
+            array(false, array(0, 1), '/2'),
+            array(true, array(0, 1), '/1'),
+            array(false, array(0, 1), '/-'),
+        );
+    }
+
+    /**
+     * @dataProvider isReadableDataProvider
+     *
+     * @param mixed  $expected
+     * @param array  $document
+     * @param string $path
+     */
+    public function testIsReadable($expected, $document, $path)
+    {
+        $result = $this->facade->isReadable($document, new JsonPointer($path));
+        $this->assertEquals($expected, $result);
+    }
+
+    public function isWritableDataProvider()
+    {
+        // TODO test with objects
+        return array(
+            array(false, array('123' => 123), ''),
+            array(false, array('123' => 123), '/'),
+            array(true, array('123' => 123), '/123'),
+            array(false, array('def' => 123), '/def/123'),
+            array(true, array('def' => array('abc' => 123)), '/def/abc'),
+            array(false, array('def' => array('abc' => 123)), '/def/abcd'),
+            array(false, array(0, 1), '/2'),
+            array(true, array(0, 1), '/1'),
+            array(false, array(0, 1), '/-'),
+        );
+    }
+
+    /**
+     * @dataProvider isWritableDataProvider
+     *
+     * @param mixed  $expected
+     * @param array  $document
+     * @param string $path
+     */
+    public function testIsWritable($expected, $document, $path)
+    {
+        $result = $this->facade->isWritable($document, new JsonPointer($path));
+        $this->assertEquals($expected, $result);
     }
 }
