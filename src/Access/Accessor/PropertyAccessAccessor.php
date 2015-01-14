@@ -43,7 +43,7 @@ class PropertyAccessAccessor implements AccessorInterface
     public function &get(&$node, $singlePath)
     {
         if (!$singlePath || !$this->isReadable($node, $singlePath)) {
-            throw new InvalidPathException(sprintf('Path %s does not exist', $singlePath));
+            throw new InvalidPathException(sprintf('Path %s is not readable', $singlePath));
         }
 
         $value = $this->propertyAccess->getValue($node, $singlePath);
@@ -57,7 +57,7 @@ class PropertyAccessAccessor implements AccessorInterface
     public function set(&$node, $singlePath, $value)
     {
         if (!$this->isWritable($node, $singlePath)) {
-            throw new InvalidPathException(sprintf('Path %s does not exist', $singlePath));
+            throw new InvalidPathException(sprintf('Path %s is not writable', $singlePath));
         }
 
         $this->propertyAccess->setValue($node, $singlePath, $value);
@@ -90,6 +90,10 @@ class PropertyAccessAccessor implements AccessorInterface
      */
     public function isReadable($node, $singlePath)
     {
+        if (!$singlePath) {
+            return false;
+        }
+
         return $this->propertyAccess->isReadable($node, $singlePath);
     }
 
@@ -98,6 +102,10 @@ class PropertyAccessAccessor implements AccessorInterface
      */
     public function isWritable($node, $singlePath)
     {
+        if (!$singlePath) {
+            return false;
+        }
+
         return $this->propertyAccess->isWritable($node, $singlePath);
     }
 }
