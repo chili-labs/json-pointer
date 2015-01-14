@@ -1,4 +1,4 @@
-# JSONPPointer (Work in Progress)
+# JSONPointer (Work in Progress)
 ###### Simple library for accessing PHP data structures with JSON Pointers (RFC 6901)
 
 [![Latest Stable Version](https://poser.pugx.org/chili-labs/json-pointer/v/stable.png)](https://packagist.org/packages/chili-labs/json-pointer) [![Latest Unstable Version](https://poser.pugx.org/chili-labs/json-pointer/v/unstable.png)](https://packagist.org/packages/chili-labs/json-pointer) [![Total Downloads](https://poser.pugx.org/chili-labs/json-pointer/downloads.png)](https://packagist.org/packages/chili-labs/json-pointer) [![Build Status](https://secure.travis-ci.org/chili-labs/json-pointer.png?branch=master)](http://travis-ci.org/chili-labs/json-pointer) [![Coverage Status](https://coveralls.io/repos/chili-labs/json-pointer/badge.png?branch=master)](https://coveralls.io/r/chili-labs/json-pointer?branch=master)
