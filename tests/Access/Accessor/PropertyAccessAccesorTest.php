@@ -31,14 +31,51 @@ class PropertyAccessAccessorTest extends \PHPUnit_Framework_TestCase
         $this->accessor = new PropertyAccessAccessor(PropertyAccess::createPropertyAccessor());
     }
 
+    public function supportDataProvider()
+    {
+        return array(
+            array(false, array()),
+            array(true, new \ArrayObject()),
+            array(false, ''),
+            array(false, 123),
+            array(false, 1.2),
+            array(true, new \stdClass()),
+            array(false, true),
+            array(false, false),
+            array(false, null),
+        );
+    }
+
+    /**
+     * @dataProvider supportDataProvider
+     *
+     * @param bool  $expected
+     * @param mixed $document
+     */
+    public function testSupports($expected, $document)
+    {
+        if ($expected) {
+            $this->assertTrue(
+                $this->accessor->supports($document),
+                'Accessor does not support document of type '.gettype($document)
+            );
+        } else {
+            $this->assertFalse(
+                $this->accessor->supports($document),
+                'Accessor must not support document of type '.gettype($document)
+            );
+        }
+    }
+
     public function accessorDataProvider()
     {
         return array(
-            array(null, new TestObject(), '', false),
-            array(null, new TestObject(), 'not', false),
-            array('private', new TestObject(), 'privateProperty', true),
-            array('protected', new TestObject(), 'protectedProperty', true),
-            array('public', new TestObject(), 'publicProperty', true),
+            array(null, new TestObject(), '', false, false),
+            array(null, new TestObject(), 'not', false, false),
+            array('private', new TestObject(), 'privateProperty', true, true),
+            array('protected', new TestObject(), 'protectedProperty', true, true),
+            array('public', new TestObject(), 'publicProperty', true, true),
+            array('readable', new TestObject(), 'privateReadableProperty', true, false),
         );
     }
 
@@ -52,7 +89,6 @@ class PropertyAccessAccessorTest extends \PHPUnit_Framework_TestCase
      */
     public function testReadable($unused, $node, $path, $expected)
     {
-        $this->markTestSkipped();
         if ($expected) {
             $this->assertTrue(
                 $this->accessor->isReadable($node, $path),
@@ -74,9 +110,8 @@ class PropertyAccessAccessorTest extends \PHPUnit_Framework_TestCase
      * @param string $path
      * @param bool   $expected
      */
-    public function testWritable($unused, $node, $path, $expected)
+    public function testWritable($unused, $node, $path, $unused2, $expected)
     {
-        $this->markTestSkipped();
         if ($expected) {
             $this->assertTrue(
                 $this->accessor->isWritable($node, $path),
@@ -111,32 +146,27 @@ class PropertyAccessAccessorTest extends \PHPUnit_Framework_TestCase
     public function setDataProvider()
     {
         return array(
-            array(null, array('123' => 123), '', array(), false),
-            array(null, array('123' => 123), 'abc', array(), false),
-            array(array('123' => 1), array('123' => 123), '123', 1, true),
-            array(array('' => array()), array('' => 123), '', array(), true),
-            array(array(0, 1, 5), array(0, 1), '2', 5, false),
-            array(array(0, 5), array(0, 1), '1', 5, true),
-            array(array('a' => 0, 1 => 5), array('a' => 0, 1 => 1), '1', 5, true),
-            array(array(0, 5), array(0, 1), '-', 5, false),
+            array(new TestObject(), 'not', 1, false),
+            array(new TestObject(), 'privateProperty', 1, true),
+            array(new TestObject(), 'protectedProperty', 1, true),
+            array(new TestObject(), 'publicProperty', 1, true),
+            array(new TestObject(), 'privateReadableProperty', 1, false),
         );
     }
 
     /**
      * @dataProvider setDataProvider
      *
-     * @param mixed  $expected
      * @param array  $document
      * @param string $path
      * @param mixed  $value
      * @param bool   $success
      */
-    public function testSet($expected, $document, $path, $value, $success)
+    public function testSet($document, $path, $value, $success)
     {
-        $this->markTestSkipped();
         if ($success) {
             $this->accessor->set($document, $path, $value);
-            $this->assertEquals($expected, $document);
+            $this->assertEquals($this->accessor->get($document, $path), $value);
         } else {
             $this->setExpectedException('\ChiliLabs\JsonPointer\Exception\InvalidPathException');
             $this->accessor->set($document, $path, $value);

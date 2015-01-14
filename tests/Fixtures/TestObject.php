@@ -22,51 +22,40 @@ class TestObject
 
     private $privateProperty = 'private';
 
+    private $privateReadablePRoperty = 'readable';
+
     private $array = array();
 
-    /**
-     * @return mixed
-     */
     public function getProtectedProperty()
     {
         return $this->protectedProperty;
     }
 
-    /**
-     * @param mixed $protectedProperty
-     */
     public function setProtectedProperty($protectedProperty)
     {
         $this->protectedProperty = $protectedProperty;
     }
 
-    /**
-     * @return mixed
-     */
     public function getPrivateProperty()
     {
         return $this->privateProperty;
     }
 
-    /**
-     * @param mixed $privateProperty
-     */
     public function setPrivateProperty($privateProperty)
     {
         $this->privateProperty = $privateProperty;
     }
 
-    /**
-     * @return array
-     */
+    public function getPrivateReadableProperty()
+    {
+        return $this->privateReadablePRoperty;
+    }
+
     public function getArray()
     {
         return $this->array;
     }
 
-    /**
-     * @param array $array
-     */
     public function setArray($array)
     {
         $this->array = $array;
