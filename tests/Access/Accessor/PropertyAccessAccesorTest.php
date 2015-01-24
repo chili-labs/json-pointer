@@ -143,7 +143,7 @@ class PropertyAccessAccessorTest extends \PHPUnit_Framework_TestCase
         }
     }
 
-    public function setDataProvider()
+    public function writeDataProvider()
     {
         return array(
             array(new TestObject(), 'not', 1, false),
@@ -155,7 +155,7 @@ class PropertyAccessAccessorTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @dataProvider setDataProvider
+     * @dataProvider writeDataProvider
      *
      * @param array  $document
      * @param string $path
@@ -173,62 +173,38 @@ class PropertyAccessAccessorTest extends \PHPUnit_Framework_TestCase
         }
     }
 
-    public function createDataProvider()
-    {
-        return array(
-            array(array('' => 1, '123' => 123), array('123' => 123), '', 1, true),
-            array(array('' => array()), array('' => 123), '', array(), false),
-            array(array('def' => 456), array(), 'def', 456, true),
-            array(array(0, 1, 5), array(0, 1), '2', 5, true),
-            array(array(0, 5, 1), array(0, 1), '1', 5, false),
-            array(null, array('a' => 0, 1 => 1), '1', 5, false),
-            array(array(0, 1, '-' => 5), array(0, 1), '-', 5, true),
-        );
-    }
-
     /**
-     * @dataProvider createDataProvider
+     * @dataProvider writeDataProvider
      *
-     * @param mixed  $expected
      * @param array  $document
      * @param string $path
      * @param mixed  $value
      * @param bool   $success
      */
-    public function testCreate($expected, $document, $path, $value, $success)
+    public function testCreate($document, $path, $value, $success)
     {
-        $this->markTestSkipped();
         if ($success) {
             $this->accessor->create($document, $path, $value);
-            $this->assertEquals($expected, $document);
+            $this->assertEquals($this->accessor->get($document, $path), $value);
         } else {
             $this->setExpectedException('\ChiliLabs\JsonPointer\Exception\InvalidPathException');
             $this->accessor->create($document, $path, $value);
         }
     }
 
-    public function deleteDataProvider()
-    {
-        return array(
-            array(null, array('123' => 123), 'abs', false),
-            array(array(), array('123' => 123), '123', true),
-        );
-    }
-
     /**
-     * @dataProvider deleteDataProvider
+     * @dataProvider writeDataProvider
      *
-     * @param mixed  $expected
      * @param array  $document
      * @param string $path
+     * @param mixed  $value
      * @param bool   $success
      */
-    public function testDelete($expected, $document, $path, $success)
+    public function testDelete($document, $path, $value, $success)
     {
-        $this->markTestSkipped();
         if ($success) {
             $this->accessor->delete($document, $path);
-            $this->assertEquals($expected, $document);
+            $this->assertEquals($this->accessor->get($document, $path), null);
         } else {
             $this->setExpectedException('\ChiliLabs\JsonPointer\Exception\InvalidPathException');
             $this->accessor->delete($document, $path);
