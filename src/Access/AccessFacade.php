@@ -274,7 +274,8 @@ class AccessFacade
      *
      * @return bool
      */
-    private function isIntegerKey($key) {
+    private function isIntegerKey($key)
+    {
         return is_numeric($key) && ((string) (int) $key) === $key;
     }
 

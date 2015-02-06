@@ -209,7 +209,6 @@ class AccessFacadeTest extends \PHPUnit_Framework_TestCase
         }
     }
 
-
     public function isReadableDataProvider()
     {
         // TODO test with objects
