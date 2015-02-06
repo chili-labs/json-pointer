@@ -241,6 +241,10 @@ class AccessFacade
      */
     private function isAssociativeArray(array $array)
     {
+        if (!count($array)) {
+            return true;
+        }
+
         for (reset($array); is_int(key($array)); next($array)) {
         }
 
@@ -257,7 +261,7 @@ class AccessFacade
      */
     private function checkAndTransformKey($key, $node)
     {
-        if ('-' === $key || $this->isIntegerKey($key)) {
+        if ('-' === $key || ($this->isIntegerKey($key) && (!is_array($node) || count($node)))) {
             if (!is_array($node) || $this->isAssociativeArray($node)) {
                 throw new InvalidPathException(
                     sprintf('Used "%s" but array was not an array or is associative.', $key)

@@ -131,6 +131,7 @@ class AccessFacadeTest extends \PHPUnit_Framework_TestCase
     {
         return array(
             array(array(), array('123' => 123), '', array(), true),
+            array(array('123' => 456), array(), '/123', 456, true),
             array(array('' => 1, '123' => 123), array('123' => 123), '/', 1, true),
             array(array('' => array()), array('' => 123), '/', array(), false),
             array(array('def' => 456), array('def' => 123), '/def', 456, false),
