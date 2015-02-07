@@ -241,10 +241,6 @@ class AccessFacade
      */
     private function isAssociativeArray(array $array)
     {
-        if (!count($array)) {
-            return true;
-        }
-
         for (reset($array); is_int(key($array)); next($array)) {
         }
 
