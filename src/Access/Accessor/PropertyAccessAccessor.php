@@ -46,6 +46,7 @@ class PropertyAccessAccessor implements AccessorInterface
             throw new InvalidPathException(sprintf('Path %s is not readable', $singlePath));
         }
 
+        // Only variables may be returned as reference
         $value = $this->propertyAccess->getValue($node, $singlePath);
 
         return $value;

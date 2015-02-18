@@ -33,7 +33,7 @@ class JsonPointer
     /**
      * @param array $pathParts
      *
-     * @return JsonPointer
+     * @return $this
      */
     public static function fromArray(array $pathParts)
     {
@@ -44,7 +44,7 @@ class JsonPointer
             $path = '/'.implode('/', $pathParts);
         }
 
-        return new JsonPointer($path);
+        return new static($path);
     }
 
     /**
