@@ -53,7 +53,7 @@ class AccessFacade
     }
 
     /**
-     * Sets the value of an already existing object/array node
+     * Sets the value of an already existing object/array node.
      *
      * If the node does not exist an InvalidPathException will be thrown
      *
@@ -73,7 +73,7 @@ class AccessFacade
         }
 
         $lastPath = array_pop($pathElements);
-        $lastNode = & $this->getNodeReference($node, JsonPointer::fromArray($pathElements));
+        $lastNode = & $this->getNodeReference($node, $pathElements);
         $accessor = $this->getAccessorForNode($lastNode, $pointer, $lastPath);
 
         if (!$accessor->isWritable($lastNode, $lastPath)) {
@@ -107,7 +107,7 @@ class AccessFacade
             return;
         }
         $lastPath = array_pop($pathElements);
-        $lastNode = & $this->getNodeReference($node, JsonPointer::fromArray($pathElements));
+        $lastNode = & $this->getNodeReference($node, $pathElements);
         $lastPath = $this->checkAndTransformKey($lastPath, $lastNode);
 
         if (is_int($lastPath)) {
@@ -120,7 +120,7 @@ class AccessFacade
     }
 
     /**
-     * Removes a object/array node
+     * Removes a object/array node.
      *
      * If the last node to remove does not exist, no Exception will be thrown
      * To have a strict behaviour use together with has()
@@ -137,7 +137,7 @@ class AccessFacade
             throw new InvalidPathException('Cannot delete root document');
         }
         $lastPath = array_pop($pathElements);
-        $lastNode = & $this->getNodeReference($node, JsonPointer::fromArray($pathElements));
+        $lastNode = & $this->getNodeReference($node, $pathElements);
 
         $accessor = $this->getAccessorForNode($lastNode, $pointer, $lastPath);
         $isAssocArray = $this->isAssociativeArray($lastNode);
@@ -182,7 +182,7 @@ class AccessFacade
         $pathElements = $pointer->toArray();
         $lastPath = array_pop($pathElements);
         try {
-            $lastNode = &$this->getNodeReference($node, JsonPointer::fromArray($pathElements));
+            $lastNode = &$this->getNodeReference($node, $pathElements);
             $accessor = $this->getAccessorForNode($lastNode, $pointer, $lastPath);
         } catch (InvalidPathException $exception) {
             return false;
@@ -192,15 +192,15 @@ class AccessFacade
     }
 
     /**
-     * @param mixed       $node
-     * @param JsonPointer $pointer
+     * @param mixed $node
+     * @param array $pointerArray
      *
      * @return mixed
      */
-    private function &getNodeReference(&$node, JsonPointer $pointer)
+    private function &getNodeReference(&$node, array $pointerArray)
     {
-        foreach ($pointer->toArray() as $singlePath) {
-            $accessor = $this->getAccessorForNode($node, $pointer, $singlePath);
+        foreach ($pointerArray as $singlePath) {
+            $accessor = $this->getAccessorForNode($node, $pointerArray, $singlePath);
             $node = & $accessor->get($node, $singlePath);
         }
 
@@ -208,13 +208,13 @@ class AccessFacade
     }
 
     /**
-     * @param mixed       $node
-     * @param JsonPointer $pointer
-     * @param string      $currentPath
+     * @param mixed                    $node
+     * @param JsonPointer|string|array $pointer
+     * @param string                   $currentPath
      *
      * @return Accessor\AccessorInterface
      */
-    private function getAccessorForNode($node, JsonPointer $pointer, $currentPath)
+    private function getAccessorForNode($node, $pointer, $currentPath)
     {
         try {
             $accessor = $this->factory->findAccessorForNode($node);
@@ -223,7 +223,7 @@ class AccessFacade
                 sprintf(
                     'The path %s in %s contains an not supported type: %s',
                     $currentPath,
-                    $pointer,
+                    is_array($pointer) ? implode('/', $pointer) : $pointer,
                     gettype($node)
                 ),
                 0,

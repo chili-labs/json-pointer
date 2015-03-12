@@ -52,7 +52,7 @@ class JsonPointer
      */
     public function toArray()
     {
-        if ($this->path === '') {
+        if ('' === $this->path) {
             return array();
         }
         $pathParts = explode('/', substr($this->path, 1));
@@ -93,7 +93,7 @@ class JsonPointer
      */
     private function validate($path)
     {
-        if ($path !== '' && $path[0] !== '/') {
+        if ('' !== $path && '/' !== $path[0]) {
             throw new \InvalidArgumentException(sprintf('Invalid Json pointer: %s', $path));
         }
     }

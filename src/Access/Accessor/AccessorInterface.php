@@ -36,7 +36,7 @@ interface AccessorInterface
     public function &get(&$node, $singlePath);
 
     /**
-     * Sets the value of an already existing object/array node
+     * Sets the value of an already existing object/array node.
      *
      * If the node does not exist an InvalidPathException will be thrown
      *
@@ -49,7 +49,7 @@ interface AccessorInterface
     public function set(&$node, $singlePath, $value);
 
     /**
-     * Adds a new object/array node with the specified value
+     * Adds a new object/array node with the specified value.
      *
      * If the node already exists and InvalidPathException will be thrown
      *
@@ -62,7 +62,7 @@ interface AccessorInterface
     public function create(&$node, $singlePath, $value);
 
     /**
-     * Removes a object/array node
+     * Removes a object/array node.
      *
      * If the node to remove does not exist, no Exception will be thrown
      * To have a strict behaviour use together with isReadable()
