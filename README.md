@@ -17,7 +17,7 @@ There are several other good libraries (
 [3](https://github.com/raphaelstolt/php-jsonpointer)
 ) for parsing json-pointers, but none of 
 them was able to access other php structures besides default arrays. With different accessors, which are part of this
-library, you can apply json-pointers to either arrays or also plain objects. Custom accesors can simply be created
+library, you can apply json-pointers to either arrays or also plain objects. Custom accessors can simply be created
 on your own.
 
 ## Installation
