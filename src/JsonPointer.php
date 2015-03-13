@@ -14,7 +14,7 @@ namespace ChiliLabs\JsonPointer;
 /**
  * @author Daniel Tschinder <daniel@tschinder.de>
  */
-class JsonPointer
+class JsonPointer implements JsonPointerInterface
 {
     /**
      * @var string
@@ -48,7 +48,7 @@ class JsonPointer
     }
 
     /**
-     * @return array
+     * {@inheritdoc}
      */
     public function toArray()
     {
@@ -61,7 +61,7 @@ class JsonPointer
     }
 
     /**
-     * @return string
+     * {@inheritdoc}
      */
     public function __toString()
     {

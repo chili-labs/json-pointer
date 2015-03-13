@@ -13,7 +13,7 @@ namespace ChiliLabs\JsonPointer\Access;
 
 use ChiliLabs\JsonPointer\Exception\InvalidPathException;
 use ChiliLabs\JsonPointer\Exception\NoMatchingAccessorException;
-use ChiliLabs\JsonPointer\JsonPointer;
+use ChiliLabs\JsonPointer\JsonPointerInterface;
 
 /**
  * @author Daniel Tschinder <daniel@tschinder.de>
@@ -34,14 +34,14 @@ class AccessFacade
     }
 
     /**
-     * @param mixed       $node
-     * @param JsonPointer $pointer
+     * @param mixed                $node
+     * @param JsonPointerInterface $pointer
      *
      * @return mixed
      *
      * @throws InvalidPathException
      */
-    public function get($node, JsonPointer $pointer)
+    public function get($node, JsonPointerInterface $pointer)
     {
         $value = $node;
         foreach ($pointer->toArray() as $singlePath) {
@@ -57,13 +57,13 @@ class AccessFacade
      *
      * If the node does not exist an InvalidPathException will be thrown
      *
-     * @param mixed       $node
-     * @param JsonPointer $pointer
-     * @param mixed       $value
+     * @param mixed                $node
+     * @param JsonPointerInterface $pointer
+     * @param mixed                $value
      *
      * @throws InvalidPathException
      */
-    public function set(&$node, JsonPointer $pointer, $value)
+    public function set(&$node, JsonPointerInterface $pointer, $value)
     {
         $pathElements = $pointer->toArray();
         if (!$pathElements) {
@@ -92,13 +92,13 @@ class AccessFacade
      * $accessor->add({does:{not:{}}}, new JsonPointer('/does/not/exist'), 1)
      * This works and the document looks like {does:{not:{exist:1}}}
      *
-     * @param mixed       $node
-     * @param JsonPointer $pointer
-     * @param mixed       $value
+     * @param mixed                $node
+     * @param JsonPointerInterface $pointer
+     * @param mixed                $value
      *
      * @throws InvalidPathException
      */
-    public function create(&$node, JsonPointer $pointer, $value)
+    public function create(&$node, JsonPointerInterface $pointer, $value)
     {
         $pathElements = $pointer->toArray();
         if (!$pathElements) {
@@ -125,12 +125,12 @@ class AccessFacade
      * If the last node to remove does not exist, no Exception will be thrown
      * To have a strict behaviour use together with has()
      *
-     * @param mixed       $node
-     * @param JsonPointer $pointer
+     * @param mixed                $node
+     * @param JsonPointerInterface $pointer
      *
      * @throws InvalidPathException
      */
-    public function delete(&$node, JsonPointer $pointer)
+    public function delete(&$node, JsonPointerInterface $pointer)
     {
         $pathElements = $pointer->toArray();
         if (!$pathElements) {
@@ -149,35 +149,35 @@ class AccessFacade
     }
 
     /**
-     * @param mixed       $node
-     * @param JsonPointer $pointer
+     * @param mixed                $node
+     * @param JsonPointerInterface $pointer
      *
      * @return bool
      */
-    public function isReadable($node, JsonPointer $pointer)
+    public function isReadable($node, JsonPointerInterface $pointer)
     {
         return $this->checkAccess('Readable', $node, $pointer);
     }
 
     /**
-     * @param mixed       $node
-     * @param JsonPointer $pointer
+     * @param mixed                $node
+     * @param JsonPointerInterface $pointer
      *
      * @return bool
      */
-    public function isWritable($node, JsonPointer $pointer)
+    public function isWritable($node, JsonPointerInterface $pointer)
     {
         return $this->checkAccess('Writable', $node, $pointer);
     }
 
     /**
-     * @param string      $mode
-     * @param mixed       $node
-     * @param JsonPointer $pointer
+     * @param string               $mode
+     * @param mixed                $node
+     * @param JsonPointerInterface $pointer
      *
      * @return bool
      */
-    private function checkAccess($mode, $node, JsonPointer $pointer)
+    private function checkAccess($mode, $node, JsonPointerInterface $pointer)
     {
         $pathElements = $pointer->toArray();
         $lastPath = array_pop($pathElements);
@@ -208,9 +208,9 @@ class AccessFacade
     }
 
     /**
-     * @param mixed                    $node
-     * @param JsonPointer|string|array $pointer
-     * @param string                   $currentPath
+     * @param mixed                             $node
+     * @param JsonPointerInterface|string|array $pointer
+     * @param string                            $currentPath
      *
      * @return Accessor\AccessorInterface
      */
