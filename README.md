@@ -1,11 +1,12 @@
 # JSONPointer
 ###### Simple library for accessing PHP data structures with JSON Pointers (RFC 6901)
 
-[![Latest Stable Version](https://poser.pugx.org/chili-labs/json-pointer/v/stable.png)](https://packagist.org/packages/chili-labs/json-pointer)
-[![Latest Unstable Version](https://poser.pugx.org/chili-labs/json-pointer/v/unstable.png)](https://packagist.org/packages/chili-labs/json-pointer)
-[![Total Downloads](https://poser.pugx.org/chili-labs/json-pointer/downloads.png)](https://packagist.org/packages/chili-labs/json-pointer)
+[![Latest Stable Version](https://img.shields.io/packagist/v/chili-labs/json-pointer.svg?style=flat&label=stable)](https://packagist.org/packages/chili-labs/json-pointer)
+[![Total Downloads](https://img.shields.io/packagist/dt/chili-labs/json-pointer.svg?style=flat)](https://packagist.org/packages/chili-labs/json-pointer)
+[![License](https://img.shields.io/packagist/l/chili-labs/json-pointer.svg?style=flat)](https://packagist.org/packages/chili-labs/json-pointer)
 [![Build Status](https://secure.travis-ci.org/chili-labs/json-pointer.png?branch=master)](http://travis-ci.org/chili-labs/json-pointer)
-[![Coverage Status](https://coveralls.io/repos/chili-labs/json-pointer/badge.png?branch=master)](https://coveralls.io/r/chili-labs/json-pointer?branch=master)
+[![Coverage Status](https://img.shields.io/coveralls/chili-labs/json-pointer.svg?style=flat)](https://coveralls.io/r/chili-labs/json-pointer?branch=master)
+[![SensioLabsInsight](https://insight.sensiolabs.com/projects/25634e78-a742-45f4-bf23-cd6f48536e3e/mini.png)](https://insight.sensiolabs.com/projects/25634e78-a742-45f4-bf23-cd6f48536e3e)
 
 ## Description
 
