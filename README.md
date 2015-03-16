@@ -11,7 +11,7 @@
 ## Description
 
 This library implements the [RFC 6901](https://tools.ietf.org/html/rfc6901) for PHP. It is possible to 
-parse an path (e.g.```/some/path```) or create the ```JsonPointer``` object from array (e.g. ```['some','path']```).
+parse a path (e.g.```/some/path```) or create the ```JsonPointer``` object from array (e.g. ```['some','path']```).
 There are several other good libraries (
 [1](https://github.com/gamringer/JSONPointer), 
 [2](https://github.com/webnium/php-json-pointer),
